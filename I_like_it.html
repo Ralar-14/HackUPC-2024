@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Like y Dislike de Imágenes</title>
+    <style>
+        /* Estilos globales para el body para asegurar que el contenido está centrado */
+        body {
+            display: flex;
+            justify-content: center; /* Centra horizontalmente los elementos de nivel superior */
+            align-items: flex-start; /* Alinea los elementos al inicio verticalmente */
+            height: 100vh; /* Usa al menos el 100% de la altura de la ventana del navegador */
+            margin: 0; /* Elimina los márgenes predeterminados */
+            background-color: #f0f0f0; /* Un color de fondo suave para la página */
+            font-family: Arial, sans-serif; /* Estilo de fuente predeterminado */
+            overflow: hidden; /* Evita el desplazamiento de la página completa */
+        }
+        
+        
+        .image-container {
+            width: 60%; /* Ajusta al tamaño deseado, centrado gracias al estilo del body */
+            height: 90vh; /* Altura basada en un porcentaje de la altura de la ventana */
+            overflow-y: auto; /* Permite el desplazamiento vertical solo dentro del contenedor */
+            display: flex;
+            flex-direction: column; /* Imágenes en columna */
+            align-items: center; /* Centra las imágenes horizontalmente */
+            background-color: #ffffff; /* Fondo blanco para el contenedor de imágenes */
+            padding: 20px; /* Espaciado interno alrededor del contenido */
+            border-radius: 8px; /* Bordes redondeados para estética */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para resaltar el contenedor */
+            margin-top: 20px; /* Espacio en la parte superior para separar del borde de la ventana */
+            margin-bottom: 20px; /* Espacio en la parte inferior para evitar cortes */
+        }
+        
+        img {
+            max-width: 90%; /* Ajuste para que las imágenes no sean demasiado anchas */
+            max-height: 570px; /* Altura máxima para cada imagen */
+            width: auto; /* Mantiene la proporción de la imagen */
+            height: auto; /* Mantiene la proporción de la imagen */
+            margin-top: 10px; /* Espacio arriba de cada imagen */
+            margin-bottom: 0px; /* Espacio debajo de cada imagen */
+        }        
+
+        button {
+            margin: 10px;
+            padding: 5px 20px;
+        }
+
+        /* CSS */
+        .button-9 {
+        background-color: #c2fbd7;
+        border-radius: 100px;
+        box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+        color: green;
+        cursor: pointer;
+        display: inline-block;
+        font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+        padding: 7px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: all 250ms;
+        border: 0;
+        font-size: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .button-10 {
+        background-color: #e28383;
+        border-radius: 100px;
+        box-shadow: rgba(127, 0, 0, 0.2) 0 -25px 18px -14px inset,rgba(70, 15, 0, 0.15) 0 1px 2px,rgba(90, 1, 0, 0.15) 0 2px 4px,rgba(88, 0, 0, 0.15) 0 4px 8px,rgba(77, 0, 0, 0.15) 0 8px 16px,rgba(81, 15, 0, 0.15) 0 16px 32px;
+        color: rgb(0, 0, 0);
+        cursor: pointer;
+        display: inline-block;
+        font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+        padding: 7px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: all 250ms;
+        border: 0;
+        font-size: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        }
+
+        .button-9:hover {
+        box-shadow: rgba(44,187,99,.35) 0 -25px 18px -14px inset,rgba(44,187,99,.25) 0 1px 2px,rgba(44,187,99,.25) 0 2px 4px,rgba(44,187,99,.25) 0 4px 8px,rgba(44,187,99,.25) 0 8px 16px,rgba(44,187,99,.25) 0 16px 32px;
+        transform: scale(1.05) rotate(-1deg);
+        }
+
+        .button-10:hover {
+            box-shadow: rgba(127, 0, 0, 0.2) 0 -25px 18px -14px inset,rgba(70, 15, 0, 0.15) 0 1px 2px,rgba(90, 1, 0, 0.15) 0 2px 4px,rgba(88, 0, 0, 0.15) 0 4px 8px,rgba(77, 0, 0, 0.15) 0 8px 16px,rgba(81, 15, 0, 0.15) 0 16px 32px;
+            transform: scale(1.05) rotate(-1deg);
+        }
+        .button {
+            position: relative;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+            padding-block: 0.5rem;
+            padding-inline: 1.25rem;
+            background-color: rgb(0 107 179);
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #ffff;
+            gap: 10px;
+            font-weight: bold;
+            border: 3px solid #ffffff4d;
+            outline: none;
+            overflow: hidden;
+            font-size: 15px;
+          }
+
+        .help {
+            display: flex;
+            flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+            justify-content: center; /* Centra los elementos verticalmente dentro del contenedor */
+            align-items: center; /* Asegura que los elementos estén alineados al centro horizontalmente */
+            margin-top: 250px; /* Espacio en la parte superior */
+            padding: 20px; /* Espacio interior para darle más presencia */
+            border-radius: 8px; /* Bordes redondeados */
+        }
+          
+          
+          .icon {
+            width: 24px;
+            height: 24px;
+            transition: all 0.3s ease-in-out;
+          }
+          
+          .button:hover {
+            transform: scale(1.05);
+            border-color: #fff9;
+          }
+          
+          .button:hover .icon {
+            transform: translate(4px);
+          }
+          
+          .button:hover::before {
+            animation: shine 1.5s ease-out infinite;
+          }
+          
+          .button::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100%;
+            background-image: linear-gradient(
+              120deg,
+              rgba(255, 255, 255, 0) 30%,
+              rgba(255, 255, 255, 0.8),
+              rgba(255, 255, 255, 0) 70%
+            );
+            top: 0;
+            left: -100px;
+            opacity: 0.6;
+          }
+        
+            .slider {
+                -webkit-appearance: none; /* Desactiva la apariencia por defecto */
+                width: 100%; /* Full width */
+                height: 15px; /* Set the slider height */
+                background: #ddd; /* Grey background */
+                outline: none; /* Remove outline */
+                opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+                transition: opacity .2s; /* 0.2 seconds transition on opacity */
+            }
+
+            .slider:hover {
+                opacity: 1; /* Fully opaque on hover */
+            }
+
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none; /* Remove default style */
+                appearance: none;
+                width: 25px; /* Set a specific slider handle width */
+                height: 25px; /* Slider handle height */
+                background: #4CAF50; /* Green background */
+                cursor: pointer; /* Cursor on hover */
+                border-radius: 50%; /* Circular cursor */
+            }
+
+            .slider::-moz-range-thumb {
+                width: 25px; /* Width of the thumb handle */
+                height: 25px; /* Height of the thumb handle */
+                background: #4CAF50; /* Background color */
+                cursor: pointer; /* Cursor type - pointer */
+                border-radius: 50%; /* Make it circular */
+            }
+          
+          @keyframes shine {
+            0% {
+              left: -100px;
+            }
+          
+            60% {
+              left: 100%;
+            }
+          
+            to {
+              left: 100%;
+            }
+          }
+          
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img id="main-image" src="" alt="Cargando imagen..." width="300"> 
+        <div>
+            <label class="slider" for="slider"></label>
+            <input type="range" id="slider" min="0" max="10" value="1" step="1">
+            <p>Valor actual: <span id="slider-value">0</span></p>
+            <button class="button-10" onclick="vote('dislike')">✘</button>
+            <button class="button-9" onclick="vote('like')">✔</button>
+        </div>
+    </div>   
+    
+    <div class="help">
+        <button class="button" onclick="loadTopImages()">Cargar Imágenes Más Votadas</button>
+        <button class="button" onclick="window.location.href='index.html'">Volver al índice</button>
+    </div>
+
+    <div class="image-container" id="image-container">
+        <!-- Las imágenes se cargarán aquí -->
+    </div>
+
+    <script>
+        let currentImageIndex = 0;  // Variable para almacenar el índice de la imagen actual
+
+        window.onload = function() {
+            fetch('http://127.0.0.1:5000/to-rate-get-image')
+            .then(response => response.json())
+            .then(data => {
+                const image = document.getElementById('main-image');
+                image.src = data.url;
+                image.alt = "Cargando imagen...";  // Cambia la descripción alternativa según necesites
+                currentImageIndex = data.id;  // Almacena el índice de la imagen
+            })
+            .catch(error => console.error('Error al cargar la imagen:', error));
+
+            var slider = document.getElementById('slider');
+            var sliderValue = document.getElementById('slider-value');
+            currentValue = slider.value; // Valor inicial del slider
+    
+            slider.oninput = function() {
+                currentValue = this.value;
+                sliderValue.textContent = currentValue;
+            }
+        };
+
+        
+
+        function loadTopImages() {
+            fetch('http://127.0.0.1:5000/top-images')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('image-container');
+                container.innerHTML = ''; // Limpiar el contenedor antes de cargar nuevas imágenes
+                data.forEach(img => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = img.url;
+                    imgElement.alt = 'Top Voted Image';
+                    container.appendChild(imgElement);
+                });
+            })
+            .catch(error => console.error('Error al cargar imágenes:', error));
+        }
+        
+        function showTopImage() {
+            fetch('http://127.0.0.1:5000/top-image')
+            .then(response => response.json())
+            .then(data => {
+                const image = document.getElementById('main-image');
+                image.src = data.url;
+                image.alt = "Imagen con Mayor Puntaje: " + data.score;
+                console.log("Mostrando imagen con mayor puntuación: ", data.score);
+            })
+            .catch(error => console.error('Error al mostrar la imagen top:', error));
+        }
+        
+        function vote(type) {
+            console.log("Voto registrado:", type);
+            fetch('http://127.0.0.1:5000/vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({vote: type, image_id: currentImageIndex, color_relevance: currentValue})
+            })
+            .then(response => response.json())
+            .then(data => console.log("Respuesta del servidor:", data))
+            .catch(error => console.error('Error enviando el voto:', error));
+        }
+
+    </script>
+</body>
+</html>

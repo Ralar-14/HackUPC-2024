@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Similitud de Imágenes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    /* Estilos básicos */
+body {
+    font-family: Arial, sans-serif; /* Fuente general de la página */
+    background-color: #f4f4f4; /* Color de fondo suave */
+    color: #333; /* Color de texto principal */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los contenedores en la página */
+}
+
+/* Contenedor de la imagen principal */
+.image-container {
+    background-color: #ffffff; /* Fondo blanco para el contenedor de imágenes */
+    padding: 20px;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para resaltar el contenedor */
+    text-align: center; /* Alinea el texto y los elementos al centro */
+    margin-bottom: 20px; /* Espacio debajo del contenedor principal */
+    width: 90%; /* Ancho del contenedor */
+    max-width: 600px; /* Máximo ancho del contenedor */
+}
+
+img {
+    max-width: 100%; /* Hace que la imagen no sea más ancha que el contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+}
+
+/* Estilización de botones para navegación y acciones */
+.button-9 {
+    background-color: #0084ff; /* Color de fondo azul */
+    color: white; /* Texto en color blanco */
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Indicador de clic */
+    font-weight: bold; /* Negrita */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+    transition: background-color 0.3s, transform 0.2s; /* Transición suave para el fondo y transformación */
+}
+
+.button-9:hover {
+    background-color: #005999; /* Cambio de color al pasar el mouse */
+    transform: scale(1.05); /* Ligero aumento de tamaño al pasar el mouse */
+}
+
+/* Contenedor para imágenes similares */
+#similar-images-container {
+    width: 90%; /* Ancho del contenedor de imágenes similares */
+    max-width: 600px; /* Máximo ancho permitido */
+    background: #fff; /* Fondo blanco */
+    padding: 15px;
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para resaltar */
+    margin-top: 20px; /* Espacio sobre el contenedor de imágenes similares */
+}
+
+.slider {
+    -webkit-appearance: none; /* Desactiva la apariencia por defecto */
+    width: 100%; /* Full width */
+    height: 15px; /* Set the slider height */
+    background: #ddd; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    transition: opacity .2s; /* 0.2 seconds transition on opacity */
+}
+
+.slider:hover {
+    opacity: 1; /* Fully opaque on hover */
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default style */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    background: #4CAF50; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 50%; /* Circular cursor */
+}
+
+.slider::-moz-range-thumb {
+    width: 25px; /* Width of the thumb handle */
+    height: 25px; /* Height of the thumb handle */
+    background: #4CAF50; /* Background color */
+    cursor: pointer; /* Cursor type - pointer */
+    border-radius: 50%; /* Make it circular */
+}
+
+#similar-images {
+    display: flex; /* Disposición en línea para imágenes similares */
+    flex-wrap: wrap; /* Permite envolver líneas */
+    justify-content: space-around; /* Espaciado uniforme entre imágenes */
+    gap: 10px; /* Espacio entre imágenes */
+}
+
+/* Estilo para los títulos de secciones */
+h2 {
+    color: #333; /* Color de texto oscuro para contraste */
+    font-size: 24px; /* Tamaño del texto */
+}
+
+</style>
+<body>
+    <div class="image-container">
+        <img id="main-image" src="" alt="Cargando imagen..." width="300">
+        <div class="centered">
+            <button class="button-9" onclick="navigate(-1)">← Anterior</button>
+            <button class="button-9" onclick="navigate(1)">Siguiente →</button>
+        </div>
+        <div>
+            <label class="slider" for="slider"></label>
+            <input type="range" id="slider" min="0" max="10" value="1" step="1">
+            <p>Valor actual: <span id="slider-value">0</span></p>
+
+            <button class="button-9" onclick="performSimilarity()">Similitud</button>
+        </div>
+    </div>
+    <div>
+        <button class="button-9" onclick="window.location.href='I_like_it.html';">Descubre tu estilo</button>
+    </div>
+    <div id="similar-images-container">
+        <h2>Imágenes Similares:</h2>
+        <div id="similar-images"></div>
+    </div>
+
+    <script>
+        let currentImages = [];
+        let currentIndex = 0;
+        let mainImage = document.getElementById('main-image');
+        let currentValue = 1; // Valor inicial del slider, también definirlo globalmente para asegurar su accesibilidad
+    
+        window.onload = function() {
+            fetch('http://127.0.0.1:5000/get-image')
+            .then(response => response.json())
+            .then(data => {
+                currentImages = data;
+                updateImage();
+            })
+            .catch(error => console.error('Error al cargar las imágenes:', error));
+    
+            var slider = document.getElementById('slider');
+            var sliderValue = document.getElementById('slider-value');
+            currentValue = slider.value; // Valor inicial del slider
+    
+            slider.oninput = function() {
+                currentValue = this.value;
+                sliderValue.textContent = currentValue;
+            }
+        };
+    
+        function navigate(direction) {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= currentImages.length) currentIndex = currentImages.length - 1;
+            updateImage();
+        }
+    
+        function updateImage() {
+            if (currentImages.length > 0) {
+                mainImage.src = currentImages[currentIndex].url;
+                mainImage.alt = 'Imagen ' + currentImages[currentIndex].id;
+                currentImageId = currentImages[currentIndex].id;
+            }
+        }
+    
+        function performSimilarity() {
+            fetch('http://127.0.0.1:5000/similarity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({image_id: currentImageId, color_relevance: currentValue})
+            })
+            .then(response => response.json())
+            .then(data => {
+                displaySimilarImages(data);
+            })
+            .catch(error => console.error('Error al solicitar la similitud:', error));
+        }
+    
+        function displaySimilarImages(similarImages) {
+            const container = document.getElementById('similar-images');
+            container.innerHTML = '';  // Limpiar imágenes anteriores
+            similarImages.forEach(img => {
+                const imgElement = document.createElement('img');
+                imgElement.src = img.url;
+                imgElement.alt = 'Similar Image ' + img.id;
+                imgElement.width = 150;  // Tamaño más pequeño para las imágenes similares
+                container.appendChild(imgElement);
+            });
+        }
+    </script>
+    
+</body>
+</html>
